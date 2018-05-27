@@ -161,7 +161,7 @@ class TestSolver(unittest.TestCase):
 
         self.assertEquals(new_pieces, [1, 2])
 
-    def test_solution(self):
+    def test_solution_solves_the_puzzle(self):
         board = [
             (0, 1, 1),
             (1, 0, 0),
