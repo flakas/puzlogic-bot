@@ -15,3 +15,21 @@ class TestSolver(unittest.TestCase):
         self.assertGreater(y, 0)
         self.assertEqual(width, 800)
         self.assertEqual(height, 600)
+
+    def test_it_finds_pieces_in_one_row(self):
+        source = ImageFileSource('tests/screenshots/puzlogic-map-1.png')
+        vision = Vision(source)
+
+        self.assertEqual(len(vision.get_pieces()), 2)
+
+    def test_it_finds_pieces_in_multiple_row(self):
+        source = ImageFileSource('tests/screenshots/puzlogic-map-3.png')
+        vision = Vision(source)
+
+        self.assertEqual(len(vision.get_pieces()), 6)
+
+    def test_it_recognizes_digit(self):
+        source = ImageFileSource('tests/screenshots/single-piece.png')
+        vision = Vision(source)
+
+        self.assertEqual(vision._recognize_number(source.get()), 3)
