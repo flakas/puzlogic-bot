@@ -22,7 +22,7 @@ class TestSolver(unittest.TestCase):
 
         self.assertEqual(len(vision.get_pieces()), 2)
 
-    def test_it_finds_pieces_in_multiple_row(self):
+    def test_it_finds_pieces_in_multiple_rows(self):
         source = ImageFileSource('tests/screenshots/puzlogic-map-3.png')
         vision = Vision(source)
 

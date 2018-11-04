@@ -3,6 +3,7 @@ import numpy as np
 import time
 import pytesseract
 from PIL import Image
+from mss import mss
 
 """
     - Detect game window
@@ -34,7 +35,7 @@ class ScreenshotSource:
         self.image = None
 
     def get(self):
-        if not self.image:
+        if self.image is None:
             self.image = self.refresh()
 
         return self.image
@@ -130,6 +131,9 @@ class Vision:
 
         # return img
 
+    def get_constraints(self):
+        return []
+
     def _recognize_number(self, img):
         img = img[5:-5, 5:-5]
         img2gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -150,7 +154,7 @@ class Vision:
         try:
             return int(character)
         except:
-            print(character)
+            # print(character)
             return False
 
 
