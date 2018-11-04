@@ -51,10 +51,27 @@ class ScreenshotSource:
     def convert_rgb_to_bgr(self, img):
         return img[:, :, ::-1]
 
+def cache_until_refresh(func):
+    def wrapper(self):
+        if func in self.cache:
+            return self.cache[func]
+
+        result = func(self)
+        self.cache[func] = result
+        return result
+
+    return wrapper
+
 class Vision:
     def __init__(self, source):
         self.source = source
+        self.cache = {}
 
+    def refresh(self):
+        self.cache = {}
+        self.source.refresh()
+
+    @cache_until_refresh
     def get_game_board(self):
         """ Detects location of the game board and returns it """
         img = self.source.get()
@@ -90,7 +107,7 @@ class Vision:
 
         return False
 
-
+    @cache_until_refresh
     def get_pieces(self):
         cells = self.get_visible_cells()
 
@@ -98,6 +115,7 @@ class Vision:
 
         return list(filter(lambda c: abs(lowest_cell[1] - c[1]) < lowest_cell[3]*3, cells))
 
+    @cache_until_refresh
     def get_cells(self):
         cells = self.get_visible_cells()
 
@@ -105,6 +123,7 @@ class Vision:
 
         return list(set(cells) - set(pieces))
 
+    @cache_until_refresh
     def get_visible_cells(self):
         (x, y, w, h, img) = self.get_game_board()
 
@@ -131,6 +150,7 @@ class Vision:
 
         # return img
 
+    @cache_until_refresh
     def get_constraints(self):
         return []
 
@@ -156,7 +176,6 @@ class Vision:
         except:
             # print(character)
             return False
-
 
     def debug(self):
         start = time.time()
