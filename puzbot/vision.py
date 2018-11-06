@@ -93,10 +93,10 @@ class Vision:
     @cache_until_refresh
     def get_pieces(self):
         cells = self.get_visible_cells()
-        lowest_cell = max(cells, key=lambda c: c[1])
+        lowest_cell = max(cells, key=lambda c: c.y)
 
         # Expect available pieces to be lower than the lowest row of game board cells
-        return list(filter(lambda c: abs(lowest_cell[1] - c[1]) < lowest_cell[3]*3, cells))
+        return list(filter(lambda c: abs(lowest_cell.y - c.y) < lowest_cell.h*3, cells))
 
     @cache_until_refresh
     def get_cells(self):
@@ -121,10 +121,12 @@ class Vision:
 
         _, contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
+        Cell = namedtuple('Cell', ['x', 'y', 'w', 'h', 'content'])
+
         # [x, y, w, h, img]
         bounding_boxes = map(lambda c: list(cv2.boundingRect(c)), contours)
         candidates = filter(lambda b: 40 < b[2] < 60 and 40 < b[3] < 60, bounding_boxes)
-        cells = map(lambda c: tuple(list(c[0:4]) + [self._recognize_number(board.screen[c[1]:c[1]+c[3], c[0]:c[0]+c[2]])]), candidates)
+        cells = map(lambda c: Cell(c[0], c[1], c[2], c[3], self._recognize_number(board.screen[c[1]:c[1]+c[3], c[0]:c[0]+c[2]])), candidates)
         return list(cells)
 
     @cache_until_refresh
