@@ -35,8 +35,10 @@ class Bot:
             remaining_pieces = list(filter(lambda p: p != target, pieces))
             return (target[0], target[1], target[2], target[3], remaining_pieces)
 
-        for (to_x, to_y, move_piece) in moves:
-            (from_x, from_y, width, height, pieces) = get_available_piece(move_piece, pieces)
+        for (to_x, to_y, required_piece) in moves:
+            (from_x, from_y, width, height, pieces) = get_available_piece(required_piece, pieces)
+
+            # Offset of the game screen within a window + offset of the cell + center of the cell
             move_from = (board_x + from_x + width/2, board_y + from_y + height/2)
             move_to = (board_x + to_x + width/2, board_y + to_y + height/2)
             print('Moving', move_from, move_to)
@@ -47,4 +49,5 @@ class Bot:
             )
 
     def refresh(self):
+        """ Get a new frame """
         self.vision.source.refresh()
