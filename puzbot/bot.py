@@ -27,7 +27,7 @@ class Bot:
 
     def do_moves(self):
         moves = self.get_moves()
-        (board_x, board_y, board_w, board_h, board_cropped) = self.vision.get_game_board()
+        board = self.vision.get_game_board()
         pieces = self.vision.get_pieces()
 
         def get_available_piece(piece, pieces):
@@ -39,8 +39,8 @@ class Bot:
             (from_x, from_y, width, height, pieces) = get_available_piece(required_piece, pieces)
 
             # Offset of the game screen within a window + offset of the cell + center of the cell
-            move_from = (board_x + from_x + width/2, board_y + from_y + height/2)
-            move_to = (board_x + to_x + width/2, board_y + to_y + height/2)
+            move_from = (board.x + from_x + width/2, board.y + from_y + height/2)
+            move_to = (board.x + to_x + width/2, board.y + to_y + height/2)
             print('Moving', move_from, move_to)
 
             self.controls.left_mouse_drag(

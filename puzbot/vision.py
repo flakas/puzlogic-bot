@@ -4,6 +4,7 @@ import time
 import pytesseract
 from PIL import Image
 from mss import mss
+from collections import namedtuple
 
 class ImageFileSource:
     def __init__(self, path):
@@ -73,6 +74,8 @@ class Vision:
 
         _, contours, _ = cv2.findContours(dilated, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
+        Board = namedtuple('Board', ['x', 'y', 'w', 'h', 'screen'])
+
         for contour in contours:
             # get rectangle bounding contour
             [x, y, w, h] = cv2.boundingRect(contour)
@@ -83,7 +86,7 @@ class Vision:
 
             cropped = original_screen_image[y:y+h, x:x+w]
 
-            return (x, y, w, h, cropped)
+            return Board(x, y, w, h, cropped)
 
         return False
 
@@ -104,9 +107,9 @@ class Vision:
 
     @cache_until_refresh
     def get_visible_cells(self):
-        (_, _, _, _, game_screen) = self.get_game_board()
+        board = self.get_game_board()
 
-        grayscale = cv2.cvtColor(game_screen, cv2.COLOR_BGR2GRAY)
+        grayscale = cv2.cvtColor(board.screen, cv2.COLOR_BGR2GRAY)
 
         ret, mask = cv2.threshold(grayscale, 100, 255, cv2.THRESH_BINARY)
         binary_grayscale = cv2.bitwise_not(mask)
@@ -121,7 +124,7 @@ class Vision:
         # [x, y, w, h, img]
         bounding_boxes = map(lambda c: list(cv2.boundingRect(c)), contours)
         candidates = filter(lambda b: 40 < b[2] < 60 and 40 < b[3] < 60, bounding_boxes)
-        cells = map(lambda c: tuple(list(c[0:4]) + [self._recognize_number(game_screen[c[1]:c[1]+c[3], c[0]:c[0]+c[2]])]), candidates)
+        cells = map(lambda c: tuple(list(c[0:4]) + [self._recognize_number(board.screen[c[1]:c[1]+c[3], c[0]:c[0]+c[2]])]), candidates)
         return list(cells)
 
     @cache_until_refresh
