@@ -14,7 +14,7 @@ Puzbot has 3 main parts:
 - **Solver** - takes the machine-readable representation of the situation and produces a list of steps necessary to take to complete the puzzle;
 - **Controller** - Operates mouse controls, traversing through UI screens and executing instructions of the Solver.
 
-If you would like to see it in action, here is a quick demo:
+If you would like to see it in action, here is a quick demo (click it to view the Youtube video):
 
 [![Basic Puzlogic game bot with OpenCV and Python](https://img.youtube.com/vi/Z8l1TRdUUSM/0.jpg)](https://www.youtube.com/watch?v=Z8l1TRdUUSM)
 
