@@ -1,7 +1,5 @@
 class Bot:
-    """
-    Needs to map vision coordinates to solver coordinates
-    """
+    """ Needs to map vision coordinates to solver coordinates """
 
     def __init__(self, vision, controls, solver):
         self.vision = vision
@@ -12,11 +10,11 @@ class Bot:
         """ Prepares vision cells for solver """
         cells = self.vision.get_cells()
 
-        return list(map(lambda c: (c[0], c[1], c[4]), cells))
+        return list(map(lambda c: (c.x, c.y, c.content), cells))
 
     def get_pieces(self):
         """ Prepares vision pieces for solver """
-        return list(map(lambda p: p[4], self.vision.get_pieces()))
+        return list(map(lambda p: p.content, self.vision.get_pieces()))
 
     def get_constraints(self):
         """ Prepares vision constraints for solver """
