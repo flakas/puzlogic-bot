@@ -1,11 +1,11 @@
 from puzbot.vision import ScreenshotSource, Vision
 from puzbot.bot import Bot
-from puzbot.solver import Solver
+from puzbot.solvers.z3 import Z3Solver
 from puzbot.controls import Controller
 
 source = ScreenshotSource()
 vision = Vision(source)
-solver = Solver()
+solver = Z3Solver()
 controller = Controller()
 bot = Bot(vision, controller, solver)
 

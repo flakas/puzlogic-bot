@@ -1,6 +1,6 @@
 import itertools
 
-class Solver:
+class BruteForceSolver:
     def __init__(self):
         pass
 

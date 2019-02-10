@@ -1,14 +1,14 @@
 import unittest
 
-from puzbot.solver import Solver
+from puzbot.solvers.bruteforce import BruteForceSolver
 
-class TestSolver(unittest.TestCase):
+class TestBruteForceSolver(unittest.TestCase):
 
     def setUp(self):
-        self.solver = Solver()
+        self.solver = BruteForceSolver()
 
     def test_it_initializes(self):
-        solver = Solver()
+        solver = BruteForceSolver()
 
     def test_unfilled_board_is_legal(self):
         board = [
