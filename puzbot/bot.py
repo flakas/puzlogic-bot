@@ -9,8 +9,7 @@ class Bot:
     def get_board(self):
         """ Prepares vision cells for solver """
         cells = self.vision.get_cells()
-
-        return list(map(lambda c: (c.x, c.y, c.content), cells))
+        return list(map(lambda c: (c.y, c.x, -1 if c.content == False else c.content), cells))
 
     def get_pieces(self):
         """ Prepares vision pieces for solver """
@@ -25,6 +24,11 @@ class Bot:
 
     def do_moves(self):
         moves = self.get_moves()
+
+        if not moves:
+            print('Unable to find a solution')
+            return False
+
         board = self.vision.get_game_board()
         available_pieces = self.vision.get_pieces()
 
@@ -33,7 +37,7 @@ class Bot:
             remaining_pieces = list(filter(lambda p: p != target, pieces))
             return (target, remaining_pieces)
 
-        for (to_x, to_y, required_piece) in moves:
+        for (to_y, to_x, required_piece) in moves:
             (piece, available_pieces) = get_available_piece(required_piece, available_pieces)
 
             # Offset of the game screen within a window + offset of the cell + center of the cell

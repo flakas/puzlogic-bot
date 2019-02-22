@@ -3,3 +3,4 @@ numpy==1.15.0
 Pillow==5.1.0
 pynput==1.4
 z3-solver==4.8.0.0.post1
+imutils==0.5.2

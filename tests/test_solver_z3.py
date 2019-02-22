@@ -13,8 +13,8 @@ class TestZ3Solver(unittest.TestCase):
     def test_solution_solves_the_puzzle_first(self):
         board = [
             (0, 1, 1),
-            (1, 0, 0),
-            (1, 1, 0),
+            (1, 0, -1),
+            (1, 1, -1),
             (2, 0, 2)
         ]
         pieces = [1, 2]
@@ -25,18 +25,18 @@ class TestZ3Solver(unittest.TestCase):
 
     def test_solution_solves_the_puzzle_third(self):
         board = [
-            (0, 0, 0),
-            (0, 2, 0),
+            (0, 0, -1),
+            (0, 2, -1),
             (0, 4, 5),
             (1, 1, 4),
-            (1, 3, 0),
+            (1, 3, -1),
             (2, 0, 6),
-            (2, 4, 0),
-            (3, 1, 0),
+            (2, 4, -1),
+            (3, 1, -1),
             (3, 3, 6),
             (4, 0, 5),
             (4, 2, 4),
-            (4, 4, 0),
+            (4, 4, -1),
         ]
         pieces = [4, 5, 6, 4, 5, 6]
 
@@ -55,20 +55,20 @@ class TestZ3Solver(unittest.TestCase):
     def test_solution_solves_the_puzzle_seventh(self):
         board = [
             (0, 0, 2),
-            (0, 3, 0),
-            (0, 5, 0),
-            (1, 0, 0),
+            (0, 3, -1),
+            (0, 5, -1),
+            (1, 0, -1),
             (1, 1, 1),
             (1, 4, 5),
-            (1, 5, 0),
+            (1, 5, -1),
             (2, 0, 6),
             (2, 2, 4),
-            (2, 5, 0),
-            (3, 0, 0),
+            (2, 5, -1),
+            (3, 0, -1),
             (3, 3, 3),
             (3, 5, 8),
-            (4, 2, 0),
-            (4, 3, 0),
+            (4, 2, -1),
+            (4, 3, -1),
             (4, 4, 7)
         ]
 
@@ -96,3 +96,16 @@ class TestZ3Solver(unittest.TestCase):
         self.assertIn((4, 2, 5), moves)
         self.assertIn((4, 3, 2), moves)
 
+    def test_solution_solves_the_puzzle_with_zero_value_pieces(self):
+        board = [
+            (0, 1, 1),
+            (1, 0, -1),
+            (1, 1, -1),
+            (2, 0, 2)
+        ]
+        pieces = [0, 2]
+        constraints = [(1, 2, 2)]
+
+        moves = list(self.solver.solve(board, pieces, []))
+
+        self.assertEquals(moves, [(1, 0, 0), (1, 1, 2)])

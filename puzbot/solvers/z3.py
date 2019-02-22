@@ -1,5 +1,6 @@
 import itertools
-from z3 import Solver, Int, Or, sat
+from z3 import Solver, Int, Or, sat, Distinct, Sum, If
+import collections
 
 class Z3Solver:
     def __init__(self):
@@ -42,16 +43,25 @@ class Z3Solver:
 
         for (row, column, value, cell) in board:
             if self.is_cell_empty(value):
-                any_of_the_piece_values = [cell == piece for piece in pieces]
+                any_of_the_piece_values = [cell == piece for piece in set(pieces)]
                 constraints.append(Or(*any_of_the_piece_values))
 
         return constraints
 
     def require_unique_row_and_column_cells(self, board):
-        return [
-            c1 != c2
-                for ((x1, y1, _, c1), (x2, y2, _, c2)) in itertools.combinations(board, 2)
-                if x1 == x2 or y1 == y2]
+        constraints = []
+        rows = set([x for (x, _, _, _) in board])
+        columns = set([y for (_, y, _, _) in board])
+
+        for row in rows:
+            cells = [c for (x, _, _, c) in board if x == row]
+            constraints.append(Distinct(*cells))
+
+        for column in columns:
+            cells = [c for (_, y, _, c) in board if y == column]
+            constraints.append(Distinct(*cells))
+
+        return constraints
 
     def match_sum_requirements(self, board, sum_requirements):
         constraints = []
@@ -62,11 +72,14 @@ class Z3Solver:
         return constraints
 
     def target_cells_use_all_available_pieces(self, board, pieces):
-        empty_cells = [cell for (_, _, value, cell) in board if self.is_cell_empty(value)]
-        return [sum(empty_cells) == sum(pieces)]
+        constraints = []
+        for (piece, quantity) in collections.Counter(pieces).items():
+            constraints.append(Sum([If(cell == piece, 1, 0) for (_, _, value, cell) in board if self.is_cell_empty(value)]) == quantity)
+
+        return constraints
 
     def cell_name(self, row, column):
         return 'c_%d_%d' % (row, column)
 
     def is_cell_empty(self, value):
-        return value == 0
+        return value == -1
